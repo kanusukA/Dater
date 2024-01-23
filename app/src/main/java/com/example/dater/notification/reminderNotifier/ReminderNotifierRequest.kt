@@ -13,7 +13,6 @@ import com.example.dater.notification.PeriodicNotificationWorker
 import com.example.dater.notification.SingleNotificationWorker
 import com.example.dater.notification.WeeklyNotificationWorker
 import java.time.Duration
-import java.util.concurrent.TimeUnit
 
 class ReminderNotifierRequest (
     private val context: Context,
@@ -40,6 +39,7 @@ class ReminderNotifierRequest (
         title: String,
         text: String
     ) {
+
 
         val work = PeriodicWorkRequestBuilder<PeriodicNotificationWorker>(Duration.ofHours(24))
             .setInputData(inputData = workDataOf("title" to title, "text" to text, "end" to end))
@@ -80,27 +80,43 @@ class ReminderNotifierRequest (
         WorkManager.getInstance(context).cancelUniqueWork(reminderId.toString())
     }
 
-    fun getReminderNotifierStatusToast() {
+    fun getReminderNotifierStatusToast():String {
 
         val workInfo = WorkManager.getInstance(context).getWorkInfosForUniqueWork(reminderId.toString()).get()
 
-        val days = ((workInfo[0].nextScheduleTimeMillis - DateHandler().getLong()) / 86400000L).toInt()
-        val hour = ((workInfo[0].nextScheduleTimeMillis - DateHandler().getLong()) / 3600000L).toInt()
-        val min = ((workInfo[0].nextScheduleTimeMillis - DateHandler().getLong()) / 60000L).toInt()
-        val sec = ((workInfo[0].nextScheduleTimeMillis - DateHandler().getLong()) / 1000L).toInt()
+        if(!workInfo.isNullOrEmpty()){
+            val days =
+                ((workInfo[0].nextScheduleTimeMillis - DateHandler().getLong()) / 86400000L).toInt()
+            val hour =
+                ((workInfo[0].nextScheduleTimeMillis - DateHandler().getLong()) / 3600000L).toInt()
+            val min =
+                ((workInfo[0].nextScheduleTimeMillis - DateHandler().getLong()) / 60000L).toInt()
+            val sec =
+                ((workInfo[0].nextScheduleTimeMillis - DateHandler().getLong()) / 1000L).toInt()
 
-        if(days == 0){
-            if (hour == 0){
-                if (min == 0) {
-                    ToastMessage(context,"Sec Left - $sec")
+            if (days <= 0) {
+                return if(days < 0){
+                    ToastMessage(context,"Passed")
+                    "Passed"
+                } else if (hour == 0) {
+                    if (min == 0) {
+                        ToastMessage(context, "Sec Left - $sec")
+                        "Sec Left - $sec"
+                    } else {
+                        ToastMessage(context, "Min Left - $min")
+                        "Min Left - $min"
+                    }
                 } else {
-                    ToastMessage(context,"Min Left - $min")
+                    ToastMessage(context, "Hours Left - $hour")
+                    "Hours Left - $hour"
                 }
             } else {
-                ToastMessage(context,"Hours Left - $hour")
+                ToastMessage(context, "Days Left - $days")
+                return "Days Left - $days"
             }
         } else {
-            ToastMessage(context,"Days Left - $days")
+            ToastMessage(context,"Reminder Not Set")
+            return "Reminder Not Set"
         }
 
     }

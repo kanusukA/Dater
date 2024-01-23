@@ -6,7 +6,7 @@ import androidx.work.Worker
 import androidx.work.WorkerParameters
 import com.example.dater.Data.utils.DateHandler
 import com.example.dater.Data.utils.getNextReminderWeekDay
-import com.example.dater.notification.ReminderNotifications
+
 
 
 class SingleNotificationWorker(
@@ -52,17 +52,19 @@ class PeriodicNotificationWorker(
 ) : Worker(context, params) {
     override fun doWork(): Result {
 
-        if(DateHandler().getLong() >= params.inputData.getLong("end", 0L)){
+        return if(DateHandler().getLong() >= params.inputData.getLong("end", 0L)){
 
             WorkManager.getInstance(context).cancelWorkById(this.id)
-            return Result.success()
+            Result.success()
 
         }else{
+            val days = DateHandler().getDaysLeft(params.inputData.getLong("end",0L))
+            val title = "Day - $days" + params.inputData.getString("title")
             ReminderNotifications(context).showBasicNotification(
-                params.inputData.getString("title") ?: "null",
+                title,
                 params.inputData.getString("text") ?: "null"
             )
-            return Result.success()
+            Result.success()
         }
     }
 

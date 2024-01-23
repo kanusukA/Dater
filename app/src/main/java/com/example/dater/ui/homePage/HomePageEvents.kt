@@ -8,7 +8,7 @@ import com.example.dater.ui.components.TopFilterBar.TopFilterBarState
 sealed class HomePageEvents{
 
     data class UpdateReminder(val reminder: Reminder): HomePageEvents()
-    data class DeleteJourney(val journey: Journey): HomePageEvents()
+    data class DeleteJourney(val journey: Journey,val listOfReminders: List<Reminder> = emptyList()): HomePageEvents()
     data class EditJourney(val journey: Journey): HomePageEvents()
     data class DeleteReminder(val reminder: Reminder): HomePageEvents()
     data class ChangeState(val homePageState: TopFilterBarState): HomePageEvents()

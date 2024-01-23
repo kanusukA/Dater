@@ -11,8 +11,6 @@ import androidx.compose.ui.Modifier
 import com.example.dater.ui.components.JourneyBox.JourneyBoxViewModel
 import com.example.dater.ui.components.JourneyBox.viewComponent.JourneyBox
 import com.example.dater.ui.components.ReminderBox.viewComponent.ReminderBoxView
-import com.example.dater.ui.components.ReminderBox.ReminderBoxViewModel
-import com.example.dater.ui.components.ReminderBox.ReminderBoxViewModelFactory
 import com.example.dater.ui.components.TopFilterBar.TopFilterBarState
 import com.example.dater.ui.homePage.HomePageEvents
 import com.example.dater.ui.homePage.HomePageViewModel
@@ -33,20 +31,21 @@ fun HomePageView(
         modifier = modifier
     ) {
         Box {
-            LazyColumn() {
+            LazyColumn {
                 when (topBarState) {
 
                     is TopFilterBarState.JourneyState -> {
 
-                        items(journeys) {
+                        items(journeys) {journey ->
                             JourneyBox(
                                 viewModel = JourneyBoxViewModel(
-                                journey = it,
-                                reminders = viewModel.getReminders(it).collectAsState().value,
+                                journey = journey,
+                                reminders = viewModel.getReminders(journey).collectAsState().value,
                                 deleteJourney = {
                                     viewModel.onEvent(
                                         HomePageEvents.DeleteJourney(
-                                            it
+                                            journey = journey,
+                                            listOfReminders = it
                                         )
                                     )
                                 }),
@@ -58,21 +57,16 @@ fun HomePageView(
 
                     is TopFilterBarState.ReminderState -> {
 
-                        items(reminders) {
+                        items(reminders) { reminder ->
 
-                            val reminderBoxViewModel = androidx.lifecycle.viewmodel.compose.viewModel<ReminderBoxViewModel>(
-                                factory = ReminderBoxViewModelFactory(
-                                    reminder = it,
-                                    editable = true,
-                                    expandable = true,
-                                    initialEditState = false,
-                                    initialExpandState = false,
-                                    onSaveReminder = {viewModel.onEvent(HomePageEvents.UpdateReminder(it))},
-                                    onDeleteReminder = {viewModel.onEvent(HomePageEvents.DeleteReminder(it))}
-                                )
-                            )
                             ReminderBoxView(
-                                viewModel = reminderBoxViewModel
+                                reminder = reminder,
+                                editable = true,
+                                expandable = true,
+                                initialEditState = false,
+                                initialExpandState = false,
+                                onSaveReminder = {viewModel.onEvent(HomePageEvents.UpdateReminder(it))},
+                                onDeleteReminder = {viewModel.onEvent(HomePageEvents.DeleteReminder(reminder))}
                             )
 
                         }

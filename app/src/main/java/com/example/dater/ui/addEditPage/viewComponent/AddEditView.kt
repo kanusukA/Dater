@@ -3,6 +3,7 @@
 package com.example.dater.ui.addEditPage.viewComponent
 
 
+import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -49,7 +50,6 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.dater.Data.Journey.domain.model.Journey
 import com.example.dater.Data.Reminder.domain.model.Reminder
 import com.example.dater.Data.Reminder.utils.ReminderType
@@ -59,8 +59,6 @@ import com.example.dater.ui.addEditPage.AddEditViewModel
 import com.example.dater.ui.addEditPage.AddEditViewState
 import com.example.dater.ui.addEditPage.DateType
 import com.example.dater.ui.components.ReminderBox.viewComponent.ReminderBoxView
-import com.example.dater.ui.components.ReminderBox.ReminderBoxViewModel
-import com.example.dater.ui.components.ReminderBox.ReminderBoxViewModelFactory
 
 
 @Composable
@@ -78,6 +76,9 @@ fun AddEditView(
     val journey = viewModel.journey.collectAsState().value
     val reminder = viewModel.reminder.collectAsState().value
     val addEditViewState = viewModel.addEditViewState.collectAsState().value
+
+    val reminderStartDateEmpty = viewModel.reminderStartDateEmpty.collectAsState().value
+    val reminderEndDateEmpty = viewModel.reminderEndDateEmpty.collectAsState().value
 
     //String
     val startDateText = viewModel.startDateText.collectAsState().value
@@ -151,6 +152,8 @@ fun AddEditView(
                     reminder = reminder,
                     startDateText = reminderStartDateText,
                     endDateText = reminderEndDateText,
+                    startDateEmpty = reminderStartDateEmpty,
+                    endDateEmpty = reminderEndDateEmpty,
                     onClickStartDate = {
                         viewModel.onEvent(AddEditEvents.showDatePicker(true))
                         datePicker = DateType.StartDate(AddEditViewState.REMINDER)
@@ -256,23 +259,16 @@ private fun AddEditJourneyView(
 
                     itemsIndexed(reminderList) { index, item ->
 
-                        val reminderBoxViewModel = viewModel<ReminderBoxViewModel>(
-                            factory = ReminderBoxViewModelFactory(
-                                reminder = item,
-                                editable = true,
-                                expandable = true,
-                                initialEditState = true,
-                                initialExpandState = true,
-                                onSaveReminder = {onUpdateReminder(index,it)},
-                                onDeleteReminder = {onDeleteReminder(index)}
-                            )
-                        )
-
                         ReminderBoxView(
-                            viewModel = reminderBoxViewModel,
+                            reminder = item,
+                            editable = true,
+                            expandable = true,
+                            initialEditState = true,
+                            initialExpandState = true,
+                            onSaveReminder = {onUpdateReminder(index,it)},
+                            onDeleteReminder = {onDeleteReminder(index)},
                             journeyEndDate = journey.endDate
                         )
-
 
                     }
 
@@ -291,6 +287,8 @@ private fun AddEditReminderView(
     reminder: Reminder,
     startDateText: String,
     endDateText: String,
+    startDateEmpty: Boolean,
+    endDateEmpty:Boolean,
     onChangeReminder: (Reminder) -> Unit,
     onClickStartDate: () -> Unit,
     onClickEndDate: () -> Unit
@@ -314,14 +312,17 @@ private fun AddEditReminderView(
             horizontalArrangement = Arrangement.SpaceEvenly,
             modifier = Modifier.fillMaxWidth()
         ) {
+
             DateButton(
                 onClick = { onClickStartDate() },
                 text = startDateText,
             )
-            DateButton(
-                onClick = { onClickEndDate() },
-                text = endDateText
-            )
+            AnimatedVisibility(visible = !startDateEmpty){
+                DateButton(
+                    onClick = { onClickEndDate() },
+                    text = endDateText
+                )
+            }
 
         }
         OutlinedTextField(

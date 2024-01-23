@@ -3,35 +3,23 @@ package com.example.dater.ui.components.JourneyBox
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.dater.Data.Journey.domain.model.Journey
-import com.example.dater.Data.Journey.domain.repository.JourneyRepository
 import com.example.dater.Data.Reminder.domain.model.Reminder
-import com.example.dater.Data.Reminder.domain.repository.ReminderRepository
 import com.example.dater.Data.Reminder.utils.ReminderType
 import com.example.dater.Data.Reminder.utils.getReminderIndex
 import com.example.dater.Data.utils.DateHandler
-import dagger.assisted.Assisted
-import dagger.assisted.AssistedInject
-import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
-import kotlinx.coroutines.flow.toList
 import kotlinx.coroutines.flow.update
-import kotlinx.coroutines.launch
-import javax.inject.Inject
 
 
 class JourneyBoxViewModel(
     val journey: Journey,
-    val deleteJourney: () -> Unit,
+    val deleteJourney: (List<Reminder>) -> Unit,
     private val reminders: List<Reminder>
 ) : ViewModel() {
-
-
-    private val _listReminders = MutableStateFlow(reminders)
-    val listReminders: StateFlow<List<Reminder>> = _listReminders
 
     private val _title = MutableStateFlow(journey.title)
     val title: StateFlow<String> = _title
@@ -41,15 +29,6 @@ class JourneyBoxViewModel(
 
     private val _endDate = MutableStateFlow(journey.endDate)
     val endDate: StateFlow<Long> = _endDate
-
-    //UI -------------------------------------------------------------------------------------------
-    private val _remindersDotCount = MutableStateFlow(
-        ReminderDotCount(_listReminders.value.count { it.reminderType == ReminderType.Alert },
-            _listReminders.value.count { it.reminderType == ReminderType.Event },
-            _listReminders.value.count { it.reminderType == ReminderType.Birthday }
-        )
-    )
-    val reminderDotCount: StateFlow<ReminderDotCount> = _remindersDotCount
 
     private val _selectedReminderType: MutableStateFlow<ReminderType> = MutableStateFlow(ReminderType.All)
     val selectedReminderType: StateFlow<ReminderType> = _selectedReminderType
@@ -63,20 +42,40 @@ class JourneyBoxViewModel(
     private val _endDateText = MutableStateFlow(DateHandler(_endDate.value).getText())
     val endDateText: StateFlow<String> = _endDateText
 
-    private val _lengthOfTime = MutableStateFlow((_endDate.value - _startDate.value) / 86400000L)
-    val lengthOfTime: StateFlow<Long> = _lengthOfTime
-
     private val _timeLeft = MutableStateFlow((_endDate.value - DateHandler().getLong())/ 86400000L)
     val timeLeft: StateFlow<Long> = _timeLeft
 
     private val _expand = MutableStateFlow(false)
     val expand: StateFlow<Boolean> = _expand
 
+    // UI --------------------------------------------------------------------------------------
+
+    val listReminders = _selectedReminderType.map { selected ->
+        when (selected){
+            ReminderType.Alert -> {
+                reminders.filter { it.reminderType == ReminderType.Alert }
+            }
+            ReminderType.All -> {
+                reminders
+            }
+            ReminderType.Birthday -> {
+                reminders.filter { it.reminderType == ReminderType.Birthday }
+            }
+            ReminderType.Event -> {
+                reminders.filter { it.reminderType == ReminderType.Event }
+            }
+        }
+    }.stateIn(
+        scope = viewModelScope,
+        started = SharingStarted.Eagerly,
+        initialValue = listOf()
+    )
+
     fun onEvent(events: JourneyBoxEvents) {
         when (events) {
 
             JourneyBoxEvents.DeleteJourney -> {
-                deleteJourney()
+                deleteJourney(listReminders.value)
             }
 
             JourneyBoxEvents.EditJourney -> TODO()
@@ -86,25 +85,12 @@ class JourneyBoxViewModel(
             }
 
             is JourneyBoxEvents.SelectReminderType -> {
-                if(_selectedReminderType.value == events.type && selectedReminderType.value != ReminderType.All){
-                    _selectedReminderType.update { ReminderType.All }
-                    _listReminders.update { reminders }
-                }else{
-                    _selectedReminderType.update { events.type }
-                    when(events.type){
-                        ReminderType.Alert -> {
-                            _listReminders.update { reminders.filter { reminder -> reminder.reminderType == ReminderType.Alert } }
-                        }
-                        ReminderType.Birthday -> {
-                            _listReminders.update { reminders.filter { reminder -> reminder.reminderType == ReminderType.Birthday } }
-                        }
-                        ReminderType.Event -> {
-                            _listReminders.update { reminders.filter { reminder -> reminder.reminderType == ReminderType.Event } }
-                        }
-
-                        else -> {}
-                    }
-                }
+                //TODO() FILTER NOT WORKING(STUCK AT THE FIRST REMINDER I.E. DOES NOT UPDATE)
+//                if(_selectedReminderType.value == events.type && selectedReminderType.value != ReminderType.All){
+//                    _selectedReminderType.update { ReminderType.All }
+//                }else{
+//                    _selectedReminderType.update { events.type }
+//                }
                 _selectedReminderIndex.update { getReminderIndex(_selectedReminderType.value) }
             }
 

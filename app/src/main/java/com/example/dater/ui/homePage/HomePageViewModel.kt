@@ -20,7 +20,6 @@ import androidx.lifecycle.viewModelScope
 import com.example.dater.Data.Reminder.utils.ReminderType
 import com.example.dater.Data.UiState.domain.repository.UiStateHomeRepository
 import com.example.dater.Data.UiState.domain.repository.UiStateRepository
-import com.example.dater.notification.ReminderNotifications
 import com.example.dater.notification.reminderNotifier.ReminderNotifierRequest
 import kotlinx.coroutines.flow.flatMapLatest
 
@@ -33,8 +32,6 @@ class HomePageViewModel @Inject constructor(
     private val uiStateHome: UiStateHomeRepository,
     private val app: Application
 ) : ViewModel() {
-
-    private val reminderNotifier = ReminderNotifications(app.applicationContext)
 
     val topFilterBarState = uiState.getTopFilterBarState()
 
@@ -62,12 +59,6 @@ class HomePageViewModel @Inject constructor(
     private val _homePageState: MutableStateFlow<TopFilterBarState> = MutableStateFlow(TopFilterBarState.JourneyState(TopFilterBarJourneyType.Ascending))
     val homePageState: StateFlow<TopFilterBarState> = _homePageState
 
-    init {
-        viewModelScope.launch {
-//            _journeysFlow.value = journeyRepository.getJourney().first()
-        }
-    }
-
 
     fun onEvent(events: HomePageEvents){
 
@@ -75,7 +66,14 @@ class HomePageViewModel @Inject constructor(
 
             is HomePageEvents.DeleteJourney -> {
                 viewModelScope.launch {
-                    journeyRepository.deleteJourney(events.journey)
+                    viewModelScope.launch{
+                        if (events.listOfReminders.isNotEmpty()) {
+                            events.listOfReminders.forEach {
+                                reminderRepository.deleteReminder(it)
+                            }
+                        }
+                        journeyRepository.deleteJourney(events.journey)
+                    }
                 }
             }
 

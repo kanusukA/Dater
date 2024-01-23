@@ -83,6 +83,21 @@ class AddEditViewModel @Inject constructor(
         initialValue = "DD/MM/YY"
     )
 
+    val reminderStartDateEmpty = _reminder.map {
+        it.startDate == 0L
+    }.stateIn(
+        scope = viewModelScope,
+        started = SharingStarted.Eagerly,
+        initialValue = true
+    )
+
+    val reminderEndDateEmpty = _reminder.map {
+        it.endDate == 0L
+    }.stateIn(
+        scope = viewModelScope,
+        started = SharingStarted.Eagerly,
+        initialValue = true
+    )
 
     val reminderStartDateText = _reminder.map {
         if (it.startDate == 0L) {
@@ -260,7 +275,7 @@ class AddEditViewModel @Inject constructor(
 
                                 _reminderList.value.forEach {
 
-                                    val reminderId = reminderRepository.insertReminder(it)
+                                    val reminderId = reminderRepository.insertReminder(it.copy())
 
                                     journeyReminders.add(reminderId)
 
@@ -275,11 +290,10 @@ class AddEditViewModel @Inject constructor(
                                 }
 
                                 viewModelScope.launch {
-                                    journeyRepository.insertJourney(_journey.value)
+                                    journeyRepository.insertJourney(_journey.value.copy())
                                 }
 
                             }
-
                             uiState.changeBottomNavBarState(BottomNavBarState.HomePage)
                         }
 
@@ -291,8 +305,10 @@ class AddEditViewModel @Inject constructor(
                         } else {
 
                             viewModelScope.launch {
-                                reminderRepository.insertReminder(_reminder.value)
+                                val reminderId = reminderRepository.insertReminder(_reminder.value)
+                                addReminderNotification(app.applicationContext,reminderId.toInt(),_reminder.value)
                             }
+
                             uiState.changeBottomNavBarState(BottomNavBarState.HomePage)
                         }
                     }
@@ -421,6 +437,12 @@ class AddEditViewModel @Inject constructor(
 
             }
         }
+    }
+
+    fun clear(){
+        _journey.update { Journey(0L,0L, title = "") }
+        _reminder.update { Reminder(0L, 0L, "", "", ReminderType.Event) }
+        _reminderList.update { listOf() }
     }
 
 }
