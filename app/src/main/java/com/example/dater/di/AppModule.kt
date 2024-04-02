@@ -7,9 +7,6 @@ import com.example.dater.Data.Journey.domain.repository.JourneyRepository
 import com.example.dater.Data.Reminder.dataSource.ReminderDataBase
 import com.example.dater.Data.Reminder.dataSource.repository.ReminderRepositoryImpli
 import com.example.dater.Data.Reminder.domain.repository.ReminderRepository
-import com.example.dater.Data.UiState.dataSource.repository.UiStateRepoImpli
-import com.example.dater.Data.UiState.domain.model.UiState
-import com.example.dater.Data.UiState.domain.repository.UiStateRepository
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -35,14 +32,14 @@ object AppModule {
 
     @Provides
     @Singleton
-    fun provideJourneyRepository(db: JourneyDatabase): JourneyRepository {
-        return JourneyRepositoryImpli(db.journeyDao())
+    fun provideJourneyRepository(db: JourneyDatabase,app: Application): JourneyRepository {
+        return JourneyRepositoryImpli(db.journeyDao(),app)
     }
 
     @Provides
     @Singleton
-    fun provideReminderRepository(db: ReminderDataBase): ReminderRepository {
-        return ReminderRepositoryImpli(db.reminderDao())
+    fun provideReminderRepository(db: ReminderDataBase,app: Application): ReminderRepository {
+        return ReminderRepositoryImpli(db.reminderDao(),app)
     }
 
 }

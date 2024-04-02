@@ -11,7 +11,7 @@ import com.example.dater.Data.Reminder.domain.model.ReminderTypeConvertor
 
 @Database(
     entities = [Reminder::class],
-    version = 1
+    version = 2
 )
 @TypeConverters(ReminderTypeConvertor::class)
 abstract class ReminderDataBase:RoomDatabase(){

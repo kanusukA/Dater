@@ -50,19 +50,21 @@ class ReminderTypeConvertor {
 
     @TypeConverter
     fun fromListIntToString(list: List<Int>): String{
-        val string = ""
-        list.forEach { string.plus("$it") }
+        var string = ""
+        list.forEach { string += it.toString() }
         return string
     }
 
     @TypeConverter
     fun toStringFromListInt(string: String): List<Int>{
+
         var list = mutableListOf<Int>(0,0,0,0,0,0,0)
         string.forEachIndexed {int,char ->
             if(char.digitToInt() == 1){
                 list[int] = 1
             }
         }
+
         return list
     }
 }

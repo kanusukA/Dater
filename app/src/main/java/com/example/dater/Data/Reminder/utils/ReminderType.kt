@@ -1,11 +1,21 @@
 package com.example.dater.Data.Reminder.utils
 
 import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.isSpecified
@@ -13,6 +23,9 @@ import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.unit.dp
 import com.example.dater.R
+import com.example.dater.ui.components.ReminderBox.animations.icon.ReminderAlertAnimation
+import com.example.dater.ui.components.ReminderBox.animations.icon.ReminderBirthdayAnimation
+import com.example.dater.ui.components.ReminderBox.animations.icon.ReminderEventAnimation
 
 
 sealed class ReminderType {
@@ -44,58 +57,71 @@ fun getReminderFromIndex(index: Int): ReminderType {
 fun ReminderTypeIconView(
     showAll: Boolean,
     selectedReminderType: Int,
+    showBackGround: Boolean = false,
     selectedReminderColor: Color = Color.Unspecified,
     iconColor: Color = MaterialTheme.colorScheme.onSurface,
     onSelectReminderType: (ReminderType) -> Unit
 ) {
-    AnimatedVisibility(visible = selectedReminderType == 0 || showAll) {
-        Icon(
-            imageVector = ImageVector.vectorResource(R.drawable.reminder_alert_icon),
-            contentDescription = "",
-            tint = if (selectedReminderType == 0 && selectedReminderColor.isSpecified) {
-                selectedReminderColor
-            } else {
-                iconColor
-            },
+
+
+
+    AnimatedVisibility(
+        visible = selectedReminderType == 0 || showAll
+    ) {
+
+        Box(
             modifier = Modifier
-                .padding(end = 6.dp, top = 6.dp, bottom = 6.dp)
-                .clickable {
-                onSelectReminderType(ReminderType.Alert)
-            }
-        )
+                .size(32.dp)
+                .background(
+                    color = MaterialTheme.colorScheme.tertiaryContainer,
+                    shape = CircleShape
+                ),
+            contentAlignment = Alignment.Center
+        ) {
+            ReminderAlertAnimation(
+                modifier = Modifier.size(26.dp),
+                onClick = { onSelectReminderType(ReminderType.Alert) }
+            )
+        }
+
     }
 
-    AnimatedVisibility(visible = selectedReminderType == 1 || showAll) {
-        Icon(
-            imageVector = ImageVector.vectorResource(R.drawable.reminder_birthday_icon),
-            contentDescription = "",
-            tint = if (selectedReminderType == 1 && selectedReminderColor.isSpecified) {
-                selectedReminderColor
-            } else {
-                iconColor
-            },
+    AnimatedVisibility(
+        visible = selectedReminderType == 1 || showAll
+    ) {
+        Box(
             modifier = Modifier
-                .padding(end = 6.dp, top = 6.dp, bottom = 6.dp)
-                .clickable {
-                onSelectReminderType(ReminderType.Birthday)
-            }
-        )
+                .size(32.dp)
+                .background(
+                    color = MaterialTheme.colorScheme.tertiaryContainer,
+                    shape = CircleShape
+                ),
+            contentAlignment = Alignment.Center
+        ) {
+            ReminderBirthdayAnimation(
+                modifier = Modifier.size(26.dp),
+                onClick = { onSelectReminderType(ReminderType.Birthday) }
+            )
+        }
     }
 
-    AnimatedVisibility(visible = selectedReminderType == 2 || showAll) {
-        Icon(
-            imageVector = ImageVector.vectorResource(R.drawable.reminder_events_icon),
-            contentDescription = "",
-            tint = if (selectedReminderType == 2 && selectedReminderColor.isSpecified) {
-                selectedReminderColor
-            } else {
-                iconColor
-            },
+    AnimatedVisibility(
+        visible = selectedReminderType == 2 || showAll
+    ) {
+
+        Box(
             modifier = Modifier
-                .padding(end = 6.dp, top = 6.dp, bottom = 6.dp)
-                .clickable {
-                onSelectReminderType(ReminderType.Event)
-            }
-        )
+                .size(32.dp)
+                .background(
+                    color = MaterialTheme.colorScheme.tertiaryContainer,
+                    shape = CircleShape
+                ),
+            contentAlignment = Alignment.Center
+        ) {
+            ReminderEventAnimation(
+                modifier = Modifier.size(26.dp),
+                onClick = { onSelectReminderType(ReminderType.Event) }
+            )
+        }
     }
 }

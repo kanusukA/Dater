@@ -1,5 +1,6 @@
 package com.example.dater.Data.Reminder.domain.repository
 
+import android.content.Context
 import com.example.dater.Data.Reminder.domain.model.Reminder
 import com.example.dater.Data.Reminder.utils.ReminderType
 import kotlinx.coroutines.flow.Flow
@@ -16,7 +17,7 @@ interface ReminderRepository {
 
     suspend fun updateReminder(reminder: Reminder)
 
-    suspend fun insertReminder(reminder: Reminder): Long
+    suspend fun insertReminder(reminder: Reminder,context: Context): Long
 
-    suspend fun deleteReminder(reminder: Reminder)
+    suspend fun deleteReminder(reminder: Reminder,context: Context)
 }

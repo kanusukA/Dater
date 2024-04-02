@@ -2,20 +2,18 @@ package com.example.dater.ui.addEditPage
 
 
 import android.app.Application
-import android.content.Context
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import androidx.navigation.NavHostController
 import com.example.dater.Data.Journey.domain.model.Journey
 import com.example.dater.Data.Journey.domain.repository.JourneyRepository
 import com.example.dater.Data.Reminder.domain.model.Reminder
-import com.example.dater.Data.Reminder.domain.model.ReminderDateType
 import com.example.dater.Data.Reminder.domain.repository.ReminderRepository
 import com.example.dater.Data.Reminder.utils.ReminderType
-import com.example.dater.Data.UiState.domain.repository.UiStateRepository
 import com.example.dater.Data.utils.DateHandler
 import com.example.dater.ToastMessage
-import com.example.dater.notification.reminderNotifier.ReminderNotifierRequest
-import com.example.dater.ui.components.BottomNavBar.BottomNavBarState
+
+import com.example.dater.ui.Navigation.NavRoutes
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
@@ -24,7 +22,6 @@ import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
-import java.time.Duration
 import javax.inject.Inject
 
 
@@ -33,12 +30,9 @@ class AddEditViewModel @Inject constructor(
     private val journeyRepository: JourneyRepository,
     private val reminderRepository: ReminderRepository,
     private val app: Application,
-    private val uiState: UiStateRepository,
-
     ) : ViewModel() {
 
-
-    val addEditViewState: StateFlow<AddEditViewState> = uiState.getAddEditViewState()
+    val addEditViewState: MutableStateFlow<AddEditViewState> = MutableStateFlow(AddEditViewState.JOURNEY)
 
     // Reminder
     private val _reminder: MutableStateFlow<Reminder> =
@@ -253,19 +247,20 @@ class AddEditViewModel @Inject constructor(
 
     //BOTTOM NAV BAR -------------------------------------------------------------------------------
 
-    fun onBottomNavBarEvents(events: AddEditBottomNavBarEvents) {
+    fun onBottomNavBarEvents(events: AddEditBottomNavBarEvents,navController: NavHostController) {
 
         when (events) {
 
-            AddEditBottomNavBarEvents.Cancel -> {
-                uiState.changeBottomNavBarState(BottomNavBarState.HomePage)
+            is AddEditBottomNavBarEvents.Cancel -> {
+                navController.navigate(NavRoutes.HomePage.routes)
             }
 
-            AddEditBottomNavBarEvents.Save -> {
+            is AddEditBottomNavBarEvents.Save -> {
 
                 when (addEditViewState.value) {
 
                     AddEditViewState.JOURNEY -> {
+
                         if (_journey.value.title.isBlank()) {
                             onError(AddEditErrors.TitleEmpty)
                         } else {
@@ -275,26 +270,19 @@ class AddEditViewModel @Inject constructor(
 
                                 _reminderList.value.forEach {
 
-                                    val reminderId = reminderRepository.insertReminder(it.copy())
+                                    val reminderId = reminderRepository.insertReminder(it.copy(), context = app.applicationContext)
 
                                     journeyReminders.add(reminderId)
-
-                                    addReminderNotification(
-                                        app.applicationContext,
-                                        reminderId = reminderId.toInt(),
-                                        reminder = it
-                                    )
-
                                     _journey.update { currentState -> currentState.copy(reminders = journeyReminders) }
 
                                 }
 
-                                viewModelScope.launch {
-                                    journeyRepository.insertJourney(_journey.value.copy())
-                                }
+
+                                journeyRepository.insertJourney(journey.value.copy())
+
 
                             }
-                            uiState.changeBottomNavBarState(BottomNavBarState.HomePage)
+                            navController.navigate(NavRoutes.HomePage.routes)
                         }
 
                     }
@@ -305,11 +293,9 @@ class AddEditViewModel @Inject constructor(
                         } else {
 
                             viewModelScope.launch {
-                                val reminderId = reminderRepository.insertReminder(_reminder.value)
-                                addReminderNotification(app.applicationContext,reminderId.toInt(),_reminder.value)
+                                val reminderId = reminderRepository.insertReminder(_reminder.value, context = app.applicationContext)
                             }
-
-                            uiState.changeBottomNavBarState(BottomNavBarState.HomePage)
+                            navController.navigate(NavRoutes.HomePage.routes)
                         }
                     }
                 }
@@ -386,58 +372,7 @@ class AddEditViewModel @Inject constructor(
 
     }
 
-    private fun addReminderNotification(
-        context: Context,
-        reminderId: Int,
-        reminder: Reminder
-    ) {
 
-        val notifierRequest = ReminderNotifierRequest(context, reminderId)
-
-        when (reminder.dateType) {
-            ReminderDateType.EmptyDate -> {
-
-                notifierRequest.createPeriodicReminderNotifierRequest(
-                    title = reminder.title,
-                    text = reminder.description,
-                    end = reminder.endDate
-                )
-
-            }
-
-            ReminderDateType.SelectedDate -> {
-                if (reminder.endDate == 0L) {
-
-                    notifierRequest.createOneTimeReminderNotifierRequest(
-                        title = reminder.title,
-                        text = reminder.description,
-                        delay = Duration.ofMillis(reminder.startDate - DateHandler().getLong())
-                    )
-
-                } else {
-
-                    notifierRequest.createPeriodicReminderNotifierRequest(
-                        title = reminder.title,
-                        startFrom = reminder.startDate,
-                        text = reminder.description,
-                        end = reminder.endDate
-                    )
-
-                }
-
-            }
-
-            ReminderDateType.SelectedDays -> {
-
-                notifierRequest.createWeeklyReminderNotifierRequest(
-                    reminder.selectedDays,
-                    reminder.title,
-                    reminder.description
-                )
-
-            }
-        }
-    }
 
     fun clear(){
         _journey.update { Journey(0L,0L, title = "") }

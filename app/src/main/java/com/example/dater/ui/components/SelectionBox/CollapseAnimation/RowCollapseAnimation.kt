@@ -33,7 +33,7 @@ class RowCollapseAnimation(
                 alignment = alignment,
                 density = density,
                 cornerRadius = cornerRadius,
-                showIndent = false
+                showIndent = showIndent
             )
         )
 
@@ -52,7 +52,7 @@ class RowCollapseAnimation(
             ) {
                 this.value = this.value.copy(
                     itemPosition = indentPos.value,
-                    showIndent = true
+                    showIndent = showIndent
                 )
             }
         }else {

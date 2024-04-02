@@ -1,6 +1,7 @@
 package com.example.dater.Data.utils
 
 
+import java.time.LocalDateTime
 import java.util.Calendar
 import java.util.Locale
 
@@ -20,6 +21,9 @@ class DateHandler (){
         calender.set(year, month, date,hourOfDay,min,sec)
     }
 
+    fun getLocalDateTime(): LocalDateTime{
+        return LocalDateTime.now()
+    }
 
     fun getText(
         monthFormat: Int = Calendar.SHORT_FORMAT,
@@ -51,6 +55,17 @@ class DateHandler (){
 
     }
 
+    fun getFullText(): String{
+        val day = calender.get(Calendar.DATE)
+        val month = calender.get(Calendar.MONTH)
+        val year = calender.get(Calendar.YEAR)
+        val hour = calender.get(Calendar.HOUR_OF_DAY)
+        val min = calender.get(Calendar.MINUTE)
+        val sec = calender.get(Calendar.SECOND)
+
+        return "$day $month $year $hour $min $sec"
+    }
+
     fun getTime():DateHandlerTime {
 
         val min = calender.get(Calendar.MINUTE)
@@ -65,10 +80,17 @@ class DateHandler (){
         calender.set(Calendar.SECOND,sec)
     }
 
-    fun addTO(date: Int = 0, month: Int = 0, year: Int = 0){
+    fun addTO(date: Int = 0, month: Int = 0, year: Int = 0, hour: Int = 0, min: Int = 0, sec: Int = 0){
         calender.add(Calendar.DATE,date)
         calender.add(Calendar.MONTH, month)
         calender.add(Calendar.YEAR, year)
+        calender.add(Calendar.SECOND,sec)
+        calender.add(Calendar.MINUTE,min)
+        calender.add(Calendar.HOUR,hour)
+    }
+
+    fun getCompletionPercentage(start: Long, end: Long): Float{
+        return  getDaysLeft(end) / ((start - end) / 86400000L).toFloat()
     }
 
     fun getDaysLeft(to: Long): Int{
@@ -91,6 +113,7 @@ class DateHandler (){
             else -> {"Error"}
         }
     }
+
 
     fun getLong(): Long{
         return calender.timeInMillis

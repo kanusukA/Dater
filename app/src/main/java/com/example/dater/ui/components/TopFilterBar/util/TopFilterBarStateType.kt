@@ -7,6 +7,7 @@ sealed class TopFilterBarJourneyType {
 }
 
 sealed class TopFilterBarReminderType {
+    object All: TopFilterBarReminderType()
     object Event: TopFilterBarReminderType()
     object Birthday: TopFilterBarReminderType()
     object Alert: TopFilterBarReminderType()

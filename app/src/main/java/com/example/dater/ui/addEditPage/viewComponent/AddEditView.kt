@@ -6,24 +6,28 @@ package com.example.dater.ui.addEditPage.viewComponent
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
-import androidx.compose.foundation.clickable
+
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.requiredHeightIn
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
-import androidx.compose.material3.DatePicker
-import androidx.compose.material3.DatePickerDialog
+
+
 import androidx.compose.material3.ExperimentalMaterial3Api
+
 import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
@@ -50,6 +54,8 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+
+import androidx.navigation.NavHostController
 import com.example.dater.Data.Journey.domain.model.Journey
 import com.example.dater.Data.Reminder.domain.model.Reminder
 import com.example.dater.Data.Reminder.utils.ReminderType
@@ -58,7 +64,8 @@ import com.example.dater.ui.addEditPage.AddEditEvents
 import com.example.dater.ui.addEditPage.AddEditViewModel
 import com.example.dater.ui.addEditPage.AddEditViewState
 import com.example.dater.ui.addEditPage.DateType
-import com.example.dater.ui.components.ReminderBox.viewComponent.ReminderBoxView
+import com.example.dater.ui.components.MyDatePicker.SimpleDatePicker
+import com.example.dater.ui.components.ReminderBox.viewComponent.ReminderBox
 
 
 @Composable
@@ -91,31 +98,23 @@ fun AddEditView(
 
     // DATE PICKER -----------------------------------------------------------------------------
     if (showDatePicker) {
-        DatePickerDialog(
-            onDismissRequest = {
-                viewModel.onEvent(AddEditEvents.showDatePicker(false))
-            },
-            confirmButton = {
-                Text("okay",
-                    modifier = Modifier.clickable {
-                        datePickerState.selectedDateMillis?.let {
-                            viewModel.onEvent(
-                                AddEditEvents.SetDatePicker(datePicker, it)
-                            )
-                        }
-                    }
+        SimpleDatePicker(
+            datePickerState = datePickerState,
+            show = showDatePicker,
+            dismiss = { viewModel.onEvent(AddEditEvents.showDatePicker(false)) },
+            setDate = {
+                viewModel.onEvent(
+                    AddEditEvents.SetDatePicker(datePicker, it)
                 )
             }
-        ) {
-            DatePicker(state = datePickerState)
-        }
+        )
     }
     // DATE PICKER -----------------------------------------------------------------------------
 
 
     Surface(
         color = MaterialTheme.colorScheme.background,
-        ) {
+    ) {
         when (addEditViewState) {
             AddEditViewState.JOURNEY -> {
 
@@ -142,7 +141,7 @@ fun AddEditView(
                     onDeleteReminder = { viewModel.onEvent(AddEditEvents.DeleteReminderInList(it)) },
                     titleErrorEmpty = titleErrors.titleEmpty,
                     titleErrorLong = titleErrors.titleLong,
-                    )
+                )
 
             }
 
@@ -259,16 +258,18 @@ private fun AddEditJourneyView(
 
                     itemsIndexed(reminderList) { index, item ->
 
-                        ReminderBoxView(
+                        ReminderBox(
                             reminder = item,
                             editable = true,
                             expandable = true,
                             initialEditState = true,
                             initialExpandState = true,
-                            onSaveReminder = {onUpdateReminder(index,it)},
-                            onDeleteReminder = {onDeleteReminder(index)},
+                            onSaveReminder = { onUpdateReminder(index, it) },
+                            onDeleteReminder = { onDeleteReminder(index) },
                             journeyEndDate = journey.endDate
                         )
+                        
+                        Spacer(modifier = Modifier.height(4.dp))
 
                     }
 
@@ -288,7 +289,7 @@ private fun AddEditReminderView(
     startDateText: String,
     endDateText: String,
     startDateEmpty: Boolean,
-    endDateEmpty:Boolean,
+    endDateEmpty: Boolean,
     onChangeReminder: (Reminder) -> Unit,
     onClickStartDate: () -> Unit,
     onClickEndDate: () -> Unit
@@ -317,7 +318,7 @@ private fun AddEditReminderView(
                 onClick = { onClickStartDate() },
                 text = startDateText,
             )
-            AnimatedVisibility(visible = !startDateEmpty){
+            AnimatedVisibility(visible = !startDateEmpty) {
                 DateButton(
                     onClick = { onClickEndDate() },
                     text = endDateText
@@ -413,53 +414,6 @@ fun DateButton(
     }
 }
 
-
-//@Composable
-//fun BorderErrorAnimation(targetValue: Boolean,
-//                         initialWidth: Dp,
-//                         initialColor: Color,
-//                         targetWidth: Dp = 3.dp,
-//                         targetColor: Color = Color.Red,
-//                         animationComplete
-//                         duration: TweenSpec<Long>
-//): State<BorderStroke> {
-//
-//
-//    var border by remember {
-//        mutableStateOf(initialWidth)
-//    }
-//
-//    var color by remember {
-//        mutableStateOf(initialColor)
-//    }
-//
-//    val animatableWidth = animateDpAsState(targetValue = border, label = "", animationSpec = tween(durationMillis = duration.durationMillis/2, easing = duration.easing))
-//    val animatableColor = animateColorAsState(targetValue = color, label = "", animationSpec = tween(durationMillis = duration.durationMillis/2,easing = duration.easing))
-//
-//    val borderStroke = remember {
-//        mutableStateOf(BorderStroke(animatableWidth.value,animatableColor.value))
-//    }
-//
-//    LaunchedEffect(key1 = animatableColor.value, key2 = animatableWidth.value){
-//        borderStroke.value = BorderStroke(animatableWidth.value,animatableColor.value)
-//    }
-//
-//    LaunchedEffect(key1 = targetValue){
-//        if (targetValue){
-//
-//            border = targetWidth
-//            color = targetColor
-//            delay(duration.durationMillis.toLong())
-//            border = initialWidth
-//            color = initialColor
-//
-//        }
-//    }
-//
-//
-//    return borderStroke
-//
-//}
 
 @Preview
 @Composable

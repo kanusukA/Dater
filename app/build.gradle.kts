@@ -16,8 +16,8 @@ android {
         applicationId = "com.example.dater"
         minSdk = 33
         targetSdk = 33
-        versionCode = 1
-        versionName = "0.011-beta"
+        versionCode = 2
+        versionName = "0.012-beta-debug"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
         vectorDrawables {
@@ -59,6 +59,23 @@ android {
 }
 
 dependencies {
+
+    //Debug implementation
+    debugImplementation("androidx.compose.ui:ui-tooling-preview:1.6.1")
+
+    //Lottie
+    implementation("com.airbnb.android:lottie-compose:6.3.0")
+
+    //lifecycle
+    implementation("androidx.lifecycle:lifecycle-runtime-compose:2.7.0")
+
+    //Glance
+    implementation("androidx.glance:glance:1.1.0-alpha01")
+    //AppWidget
+    implementation("androidx.glance:glance-appwidget:1.1.0-alpha01")
+
+    //API for Material 3
+    implementation("androidx.glance:glance-material3:1.0.0")
 
     //Notification
     implementation("androidx.work:work-runtime-ktx:2.9.0")

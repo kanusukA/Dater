@@ -9,6 +9,8 @@ sealed class JourneyBoxEvents {
     object DeleteJourney: JourneyBoxEvents()
     object Expand: JourneyBoxEvents()
     object EditJourney: JourneyBoxEvents()
+    object AlertState: JourneyBoxEvents()
+
 }
 
 data class ReminderDotCount(
