@@ -1,7 +1,5 @@
 package com.example.dater.ui.components.ReminderBox.animations.icon
 
-import android.graphics.BlendMode
-import android.graphics.BlendModeColorFilter
 import androidx.compose.animation.core.Easing
 import androidx.compose.animation.core.FastOutLinearInEasing
 import androidx.compose.foundation.clickable
@@ -17,7 +15,6 @@ import androidx.compose.ui.Modifier
 import com.airbnb.lottie.LottieProperty
 import com.airbnb.lottie.compose.LottieAnimation
 import com.airbnb.lottie.compose.LottieCompositionSpec
-import com.airbnb.lottie.compose.LottieDynamicProperties
 import com.airbnb.lottie.compose.animateLottieCompositionAsState
 import com.airbnb.lottie.compose.rememberLottieComposition
 import com.airbnb.lottie.compose.rememberLottieDynamicProperties
@@ -36,7 +33,7 @@ fun ReminderAlertAnimation(
     val interactionSource = remember {
         MutableInteractionSource()
     }
-    val keyPath = KeyPath("**","Stroke 1").keysToString()
+
 
     //TODO()  ADD DYNAMIC COLOR TO WIDGETS
 

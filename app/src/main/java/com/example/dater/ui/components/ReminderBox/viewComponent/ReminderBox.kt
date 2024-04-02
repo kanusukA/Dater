@@ -26,10 +26,8 @@ import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Button
-import androidx.compose.material3.ButtonColors
 import androidx.compose.material3.DatePicker
 import androidx.compose.material3.DatePickerDialog
-import androidx.compose.material3.DateRangePicker
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FilledTonalButton
 import androidx.compose.material3.Icon
@@ -47,7 +45,6 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
@@ -69,7 +66,6 @@ import com.example.dater.Data.Reminder.domain.model.ReminderDateType
 import com.example.dater.Data.Reminder.utils.ReminderType
 import com.example.dater.Data.utils.DateHandler
 import com.example.dater.R
-import com.example.dater.ui.components.ReminderBox.ReminderBoxEvents
 import com.example.dater.ui.components.ReminderBox.animations.icon.ReminderAlertAnimation
 import com.example.dater.ui.components.ReminderBox.animations.icon.ReminderBirthdayAnimation
 import com.example.dater.ui.components.ReminderBox.animations.icon.ReminderEventAnimation
@@ -105,7 +101,7 @@ fun ReminderBox(
         modifier = modifier,
         color = Color.Transparent
     ) {
-        reminderBoxView(
+        ReminderBoxView(
             reminder = savableReminder,
             editState = editState,
             expandState = expandState,
@@ -141,7 +137,7 @@ fun ReminderBox(
 // Add Reminder Notification system
 
 @Composable
-private fun reminderBoxView(
+private fun ReminderBoxView(
     reminder: Reminder,
     editState: Boolean,
     expandState: Boolean,
@@ -171,14 +167,14 @@ private fun reminderBoxView(
             borderStroke = BorderStroke(0.dp, Color.Transparent),
             color = MaterialTheme.colorScheme.secondaryContainer,
             buttons = {
-                reminderDateTypeSelectionButtons(
+                ReminderDateTypeSelectionButtons(
                     reminderType = reminder.reminderType,
                     onChangeReminderDateType = { onUpdateReminder(reminder.copy(dateType = it)) }
                 )
             }
         ) {
 
-            reminderDateView(
+            ReminderDateView(
                 reminder = reminder,
                 journeyEndDate = journeyEndDate,
                 editState = true,
@@ -197,7 +193,7 @@ private fun reminderBoxView(
 
         }
     } else {
-        reminderDateView(
+        ReminderDateView(
             reminder = reminder,
             journeyEndDate = journeyEndDate,
             editState = false,
@@ -218,7 +214,7 @@ private fun reminderBoxView(
 }
 
 @Composable
-private fun reminderDateView(
+private fun ReminderDateView(
     reminder: Reminder,
     journeyEndDate: Long,
     editState: Boolean,
@@ -277,7 +273,7 @@ private fun reminderDateView(
 
         AnimatedContent(targetState = expandState, label = "") { it ->
             if (it) {
-                reminderBoxExpanded(
+                ReminderBoxExpanded(
                     reminder = reminder,
                     journeyEndDate = journeyEndDate,
                     editState = editState,
@@ -288,7 +284,7 @@ private fun reminderDateView(
                     onChangeEdit = { onChangeEdit(it) }
                 )
             } else {
-                reminderBoxUnexpanded(reminder = reminder)
+                ReminderBoxUnexpanded(reminder = reminder)
             }
         }
 
@@ -296,7 +292,7 @@ private fun reminderDateView(
 }
 
 @Composable
-private fun reminderBoxUnexpanded(
+private fun ReminderBoxUnexpanded(
     reminder: Reminder,
 
 ) {
@@ -308,13 +304,13 @@ private fun reminderBoxUnexpanded(
     ) {
         when (reminder.dateType) {
             ReminderDateType.EmptyDate -> {
-                reminderEmptyDateView(
+                ReminderEmptyDateView(
                     reminder.endDate
                 )
             }
 
             ReminderDateType.SelectedDate -> {
-                reminderSelectedDateView(
+                ReminderSelectedDateView(
                     editState = false,
                     expandState = false,
                     startDate = reminder.startDate,
@@ -329,7 +325,7 @@ private fun reminderBoxUnexpanded(
 
                 Spacer(modifier = Modifier.width(6.dp))
 
-                reminderSelectedDaysView(
+                ReminderSelectedDaysView(
                     editState = false,
                     expandState = false,
                     selectedDaysList = reminder.selectedDays,
@@ -354,7 +350,7 @@ private fun reminderBoxUnexpanded(
 
 
 @Composable
-private fun reminderBoxExpanded(
+private fun ReminderBoxExpanded(
     reminder: Reminder,
     journeyEndDate: Long,
     editState: Boolean,
@@ -374,11 +370,11 @@ private fun reminderBoxExpanded(
                 if(editState){
                     onUpdateReminder(reminder.copy(endDate = journeyEndDate))
                 }
-                reminderEmptyDateView(endDate = reminder.endDate)
+                ReminderEmptyDateView(endDate = reminder.endDate)
             }
 
             ReminderDateType.SelectedDate -> {
-                reminderSelectedDateView(
+                ReminderSelectedDateView(
                     editState = editState,
                     expandState = true,
                     startDate = reminder.startDate,
@@ -390,7 +386,7 @@ private fun reminderBoxExpanded(
             }
 
             ReminderDateType.SelectedDays -> {
-                reminderSelectedDaysView(
+                ReminderSelectedDaysView(
                     editState = editState,
                     selectedDaysList = reminder.selectedDays,
                     expandState = true,
@@ -401,7 +397,7 @@ private fun reminderBoxExpanded(
 
         Spacer(modifier = Modifier.height(4.dp))
 
-        reminderAssistText(
+        ReminderAssistText(
             reminderType = reminder.reminderType,
             reminderDateType = reminder.dateType,
             startDate = reminder.startDate,
@@ -411,7 +407,7 @@ private fun reminderBoxExpanded(
         Spacer(modifier = Modifier.height(18.dp))
 
 
-        reminderTextBoxView(
+        ReminderTextBoxView(
             text = reminder.title,
             onValueChange = { onUpdateReminder(reminder.copy(title = it)) },
             editState = editState,
@@ -423,7 +419,7 @@ private fun reminderBoxExpanded(
 
         Spacer(modifier = Modifier.height(12.dp))
 
-        reminderTextBoxView(
+        ReminderTextBoxView(
             text = reminder.description,
             onValueChange = { onUpdateReminder(reminder.copy(description = it)) },
             editState = editState,
@@ -435,7 +431,7 @@ private fun reminderBoxExpanded(
 
         Spacer(modifier = Modifier.height(12.dp))
 
-        reminderBoxButtons(
+        ReminderBoxButtons(
             modifier = Modifier.align(Alignment.End),
             editState = editState,
             onClickSave = { onSave() },
@@ -449,7 +445,7 @@ private fun reminderBoxExpanded(
 
 
 @Composable
-private fun reminderEmptyDateView(
+private fun ReminderEmptyDateView(
     endDate: Long
 ) {
 
@@ -480,7 +476,7 @@ private fun reminderEmptyDateView(
 }
 
 @Composable
-private fun reminderSelectedDateView(
+private fun ReminderSelectedDateView(
     editState: Boolean,
     expandState: Boolean,
     startDate: Long,
@@ -669,7 +665,7 @@ private fun reminderSelectedDateView(
 }
 
 @Composable
-private fun reminderSelectedDaysView(
+private fun ReminderSelectedDaysView(
     editState: Boolean,
     expandState: Boolean,
     selectedDaysList: List<Int>,
@@ -765,7 +761,7 @@ private fun reminderSelectedDaysView(
 }
 
 @Composable
-private fun reminderTextBoxView(
+private fun ReminderTextBoxView(
     text: String,
     onValueChange: (String) -> Unit,
     editState: Boolean,
@@ -797,7 +793,7 @@ private fun reminderTextBoxView(
 }
 
 @Composable
-private fun reminderBoxButtons(
+private fun ReminderBoxButtons(
     modifier: Modifier = Modifier,
     editState: Boolean,
     onClickSave: () -> Unit,
@@ -832,7 +828,7 @@ private fun reminderBoxButtons(
 }
 
 @Composable
-private fun reminderDateTypeSelectionButtons(
+private fun ReminderDateTypeSelectionButtons(
     reminderType: ReminderType,
     onChangeReminderDateType: (ReminderDateType) -> Unit
 ) {
@@ -956,7 +952,7 @@ private fun getReminderDateTypeIndex(
 }
 
 @Composable
-private fun reminderAssistText(
+private fun ReminderAssistText(
     reminderType: ReminderType,
     reminderDateType: ReminderDateType,
     startDate: Long,
@@ -1038,45 +1034,3 @@ private enum class ReminderDate {
     END
 }
 
-@Preview
-@Composable
-fun reminderBoxViewPreview() {
-
-    var reminder by remember {
-        mutableStateOf(
-            Reminder(
-                DateHandler().getLong(),
-                DateHandler(29, 2, 2024).getLong(),
-                "This is an title",
-                "This is an description",
-                ReminderType.Alert,
-                dateType = ReminderDateType.SelectedDays,
-                selectedDays = listOf(1, 0, 0, 1, 1, 0, 0)
-            )
-        )
-    }
-
-    var editState by remember {
-        mutableStateOf(false)
-    }
-    var expandState by remember {
-        mutableStateOf(true)
-    }
-    val dateHandler by remember {
-        mutableStateOf(DateHandler(29, 4, 2024))
-    }
-
-
-    reminderBoxView(
-        reminder = reminder,
-        editState = editState,
-        expandState = expandState,
-        onChangeExpandState = { expandState = it },
-        onChangeEditState = { editState = it },
-        onUpdateReminder = { reminder = it },
-        journeyEndDate = dateHandler.getLong(),
-        onDeleteReminder = {},
-        onSaveReminder = {},
-        onCancelReminder = {}
-    )
-}

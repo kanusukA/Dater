@@ -11,7 +11,7 @@ import com.example.dater.Data.Reminder.domain.model.Reminder
 import com.example.dater.Data.Reminder.domain.repository.ReminderRepository
 import com.example.dater.Data.Reminder.utils.ReminderType
 import com.example.dater.Data.utils.DateHandler
-import com.example.dater.ToastMessage
+import com.example.dater.toastMessage
 
 import com.example.dater.ui.Navigation.NavRoutes
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -324,7 +324,7 @@ class AddEditViewModel @Inject constructor(
                                 dateGreaterThanEnd = true
                             )
                         }
-                        ToastMessage(app.applicationContext, "Date is Greater Than End Date")
+                        toastMessage(app.applicationContext, "Date is Greater Than End Date")
                     } else {
                         _startDateErrors.update { currentState ->
                             currentState.copy(
@@ -341,7 +341,7 @@ class AddEditViewModel @Inject constructor(
                 if (_journey.value.startDate != 0L) {
                     if (errors.long <= _journey.value.startDate) {
                         _endDateErrors.update { currentState -> currentState.copy(dateLessThanStart = true) }
-                        ToastMessage(app.applicationContext, "Date is Less Than Start Date")
+                        toastMessage(app.applicationContext, "Date is Less Than Start Date")
                     } else {
                         _endDateErrors.update { currentState -> currentState.copy(dateLessThanStart = false) }
                     }
@@ -352,7 +352,7 @@ class AddEditViewModel @Inject constructor(
 
             is AddEditErrors.TitleEmpty -> {
                 _titleErrors.update { currentState -> currentState.copy(titleEmpty = true) }
-                ToastMessage(app.applicationContext, "Title is Empty!")
+                toastMessage(app.applicationContext, "Title is Empty!")
             }
 
             is AddEditErrors.TitleError -> {

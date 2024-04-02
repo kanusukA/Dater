@@ -2,27 +2,15 @@ package com.example.dater.Data.Reminder.utils
 
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.background
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.PaddingValues
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.CircleShape
-import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.isSpecified
-import androidx.compose.ui.graphics.vector.ImageVector
-import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.unit.dp
-import com.example.dater.R
 import com.example.dater.ui.components.ReminderBox.animations.icon.ReminderAlertAnimation
 import com.example.dater.ui.components.ReminderBox.animations.icon.ReminderBirthdayAnimation
 import com.example.dater.ui.components.ReminderBox.animations.icon.ReminderEventAnimation
@@ -44,14 +32,7 @@ fun getReminderIndex(reminderType: ReminderType): Int {
     }
 }
 
-fun getReminderFromIndex(index: Int): ReminderType {
-    return when (index) {
-        0 -> ReminderType.Alert
-        1 -> ReminderType.Birthday
-        2 -> ReminderType.Event
-        else -> ReminderType.All
-    }
-}
+
 
 @Composable
 fun ReminderTypeIconView(

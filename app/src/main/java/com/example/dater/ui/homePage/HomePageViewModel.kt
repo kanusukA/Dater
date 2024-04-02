@@ -1,7 +1,6 @@
 package com.example.dater.ui.homePage
 
 import android.app.Application
-import androidx.compose.runtime.snapshotFlow
 import androidx.lifecycle.ViewModel
 import com.example.dater.Data.Journey.domain.model.Journey
 import com.example.dater.Data.Journey.domain.repository.JourneyRepository
@@ -23,11 +22,7 @@ import com.example.dater.di.UiDependency.TopFilterBarState
 import com.example.dater.ui.components.TopFilterBar.util.TopFilterBarReminderType
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.combine
-import kotlinx.coroutines.flow.debounce
-import kotlinx.coroutines.flow.filter
 import kotlinx.coroutines.flow.map
-import kotlinx.coroutines.time.debounce
-import java.time.Duration
 
 
 @HiltViewModel
@@ -203,23 +198,18 @@ class HomePageViewModel @Inject constructor(
 
     }
 
-    fun getReminders(journey: Journey): StateFlow<List<Reminder>>{
+    fun getReminders(journey: Journey): StateFlow<List<Reminder>> {
 
-        val output = reminderRepository.getReminderList(journey.reminders).stateIn(
+        return reminderRepository.getReminderList(journey.reminders).stateIn(
             scope = viewModelScope,
             started = SharingStarted.Eagerly,
             initialValue = emptyList()
         )
-
-        return output
     }
 
 
 }
 
-enum class JourneySortType{
-    ASC,
-    DESC
-}
+
 
 

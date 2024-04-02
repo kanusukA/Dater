@@ -58,7 +58,7 @@ class ReminderTypeConvertor {
     @TypeConverter
     fun toStringFromListInt(string: String): List<Int>{
 
-        var list = mutableListOf<Int>(0,0,0,0,0,0,0)
+        val list = mutableListOf<Int>(0,0,0,0,0,0,0)
         string.forEachIndexed {int,char ->
             if(char.digitToInt() == 1){
                 list[int] = 1

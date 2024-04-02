@@ -15,7 +15,7 @@ class AlarmReceiverRepeating(): BroadcastReceiver() {
         val text = intent?.getStringExtra("Text") ?: "No Text"
         val endDate = intent?.getLongExtra("EndDate",-1) ?: -1
         val id = intent?.getLongExtra("id",-1) ?: -1
-        val title = ("Day: ${DateHandler().getDaysLeft(endDate)} " + intent?.getStringExtra("Title")) ?: "No Title"
+        val title = ("Day: ${DateHandler().getDaysLeft(endDate)} " + intent?.getStringExtra("Title"))
 
         context?.let { cxt ->
 

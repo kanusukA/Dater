@@ -41,8 +41,8 @@ class DateHandler (){
             when(dateLength){
 
                 TextLength.DAY -> stringDay
-                TextLength.MONTH -> stringDay + month.uppercase()
-                TextLength.YEAR -> stringDay + "${month.uppercase()}$year"
+                TextLength.MONTH -> stringDay + (month?.uppercase() ?: "Jan")
+                TextLength.YEAR -> stringDay + "${month?.uppercase() ?: "Jan"}$year"
             }
         }else{
             when(dateLength){

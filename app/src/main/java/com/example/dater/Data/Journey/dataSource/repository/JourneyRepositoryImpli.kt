@@ -1,6 +1,5 @@
 package com.example.dater.Data.Journey.dataSource.repository
 
-import android.app.Application
 import android.content.Context
 import com.example.dater.Data.Journey.dataSource.JourneyDao
 import com.example.dater.Data.Journey.domain.model.Journey
@@ -12,7 +11,7 @@ import kotlinx.coroutines.flow.Flow
 
 class JourneyRepositoryImpli(
     private val dao: JourneyDao,
-    private val context: Context
+    context: Context
 ): JourneyRepository {
 
     private val journeyAlarmScheduler = JourneyAlarmSchedulerImpl(context)

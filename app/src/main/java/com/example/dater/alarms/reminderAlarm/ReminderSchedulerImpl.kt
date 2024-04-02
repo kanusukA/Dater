@@ -4,7 +4,6 @@ import android.app.AlarmManager
 import android.app.PendingIntent
 import android.content.Context
 import android.content.Intent
-import com.example.dater.Data.Reminder.domain.model.Reminder
 import com.example.dater.Data.Reminder.domain.model.ReminderDateType
 import com.example.dater.Data.Reminder.utils.ReminderType
 import com.example.dater.Data.utils.DateHandler

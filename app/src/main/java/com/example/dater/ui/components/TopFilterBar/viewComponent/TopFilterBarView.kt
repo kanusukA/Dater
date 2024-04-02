@@ -7,8 +7,6 @@ import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.animateColorAsState
 import androidx.compose.animation.core.animateDpAsState
 import androidx.compose.animation.core.animateFloatAsState
-import androidx.compose.animation.core.animateIntAsState
-import androidx.compose.animation.core.tween
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
 import androidx.compose.animation.shrinkHorizontally
@@ -18,7 +16,6 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.IntrinsicSize
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -32,45 +29,34 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text2.BasicTextField2
-import androidx.compose.foundation.text2.TextFieldDecorator
 import androidx.compose.foundation.text2.input.TextFieldLineLimits
 import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableFloatStateOf
+import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.drawBehind
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.TransformOrigin
-import androidx.compose.ui.graphics.colorspace.ColorSpace
 import androidx.compose.ui.graphics.graphicsLayer
-import androidx.compose.ui.graphics.vector.ImageVector
-import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
-import androidx.compose.ui.tooling.preview.PreviewDynamicColors
-import androidx.compose.ui.tooling.preview.PreviewLightDark
-import androidx.compose.ui.tooling.preview.PreviewScreenSizes
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.viewmodel.compose.viewModel
-import com.example.dater.R
 import com.example.dater.ui.components.ReminderBox.animations.icon.ReminderAlertAnimation
 import com.example.dater.ui.components.ReminderBox.animations.icon.ReminderBirthdayAnimation
 import com.example.dater.ui.components.ReminderBox.animations.icon.ReminderEventAnimation
@@ -186,19 +172,19 @@ private fun topSearchBar(
     // Add search functionality
 
     var transitionX by remember {
-        mutableStateOf(0f)
+        mutableFloatStateOf(0f)
     }
 
     var transitionY by remember {
-        mutableStateOf(0f)
+        mutableFloatStateOf(0f)
     }
 
     var scale by remember {
-        mutableStateOf(0f)
+        mutableFloatStateOf(0f)
     }
 
     val fontSize by remember(key1 = searchState.showState) {
-        mutableStateOf(
+        mutableIntStateOf(
             if (searchState.showState) {
                 38
             } else {
@@ -486,25 +472,5 @@ private fun topFilterBarButtons(
 }
 
 
-@Preview
-@Composable
-fun previewTopBar() {
 
-    var showSearch by remember {
-        mutableStateOf(true)
-    }
-
-    var searchText by remember {
-        mutableStateOf("")
-    }
-
-    topSearchBar(
-        modifier = Modifier.height(100.dp),
-        stateString = "Journey",
-        searchState = TopFilterBarSearchState(showSearch, searchText),
-        onClickShowSearch = { showSearch = !showSearch },
-        onChangeSearchString = { searchText = it },
-        onClickCloseSearch = {}
-    )
-}
 

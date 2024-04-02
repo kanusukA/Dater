@@ -6,7 +6,6 @@ import com.example.dater.Data.Reminder.domain.model.Reminder
 import com.example.dater.Data.Reminder.domain.repository.ReminderRepository
 import com.example.dater.Data.Reminder.utils.ReminderType
 import com.example.dater.alarms.reminderAlarm.ReminderAlarmItem
-import com.example.dater.alarms.reminderAlarm.ReminderScheduler
 import com.example.dater.alarms.reminderAlarm.ReminderSchedulerImpl
 
 import kotlinx.coroutines.flow.Flow

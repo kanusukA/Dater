@@ -10,7 +10,6 @@ import androidx.room.Update
 import com.example.dater.Data.Journey.domain.model.Journey
 import com.example.dater.Data.Journey.domain.model.JourneyWidgetSelection
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.StateFlow
 
 
 @Dao

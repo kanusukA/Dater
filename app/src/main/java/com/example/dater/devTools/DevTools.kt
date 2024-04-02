@@ -29,10 +29,6 @@ fun DevTools(
     modifier: Modifier = Modifier
 ) {
     val viewModel = hiltViewModel<DevToolsViewModel>()
-    val journeys = viewModel.journeys.collectAsState().value
-    val reminders = viewModel.reminders.collectAsState().value
-    val state = viewModel.selectedState.collectAsState().value
-    val workCount = viewModel.workStatus.collectAsState().value
 
     // Make a debuging ui to test this
 

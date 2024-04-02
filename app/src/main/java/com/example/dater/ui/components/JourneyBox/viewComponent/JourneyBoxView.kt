@@ -19,7 +19,6 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.requiredHeightIn
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Button
@@ -50,12 +49,9 @@ import androidx.compose.ui.text.font.Font
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.withStyle
-import androidx.compose.ui.tooling.preview.Preview
-import androidx.compose.ui.tooling.preview.PreviewDynamicColors
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import com.example.dater.Data.Journey.domain.model.Journey
 import com.example.dater.Data.Journey.domain.model.JourneyWidgetSelection
 import com.example.dater.Data.Journey.utils.JourneyWidgetType
 import com.example.dater.Data.Journey.utils.getJourneyWidgetType
@@ -63,8 +59,6 @@ import com.example.dater.Data.Reminder.domain.model.Reminder
 import com.example.dater.Data.Reminder.utils.ReminderType
 import com.example.dater.Data.Reminder.utils.ReminderTypeIconView
 import com.example.dater.R
-
-import com.example.dater.ui.addEditPage.viewComponent.DateButton
 import com.example.dater.ui.components.JourneyBox.JourneyBoxEvents
 import com.example.dater.ui.components.JourneyBox.JourneyBoxViewModel
 import com.example.dater.ui.components.ReminderBox.animations.icon.ReminderAlertAnimation
@@ -94,7 +88,7 @@ fun JourneyBox(
     val selectedReminderIndex = viewModel.selectedReminderIndex.collectAsState().value
     val endDateLong = viewModel.journey.endDate
 
-    val context = LocalContext.current
+
 //    val notification = JourneyNotifierRequest(context, viewModel.journey.id)
 
     val journeySelected = remember(key1 = journeyWidgetSelection) {

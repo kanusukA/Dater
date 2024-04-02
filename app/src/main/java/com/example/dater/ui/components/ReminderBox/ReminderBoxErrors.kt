@@ -3,7 +3,7 @@ package com.example.dater.ui.components.ReminderBox
 import android.content.Context
 import com.example.dater.Data.Reminder.domain.model.Reminder
 import com.example.dater.Data.Reminder.domain.model.ReminderDateType
-import com.example.dater.ToastMessage
+import com.example.dater.toastMessage
 
 
 
@@ -25,7 +25,7 @@ class ReminderErrorCheck(
         if (string.length < 25){
             onUpdateReminder(reminder.copy(title = string))
         } else{
-            ToastMessage(context, " Title Long")
+            toastMessage(context, " Title Long")
         }
     }
 
@@ -33,7 +33,7 @@ class ReminderErrorCheck(
         if (string.length < 150){
             onUpdateReminder(reminder.copy(description = string))
         } else {
-            ToastMessage(context, "Description Long")
+            toastMessage(context, "Description Long")
         }
     }
 
@@ -41,7 +41,7 @@ class ReminderErrorCheck(
         if (reminder.endDate > long || reminder.endDate == 0L){
             onUpdateReminder(reminder.copy(startDate = long))
         } else {
-            ToastMessage(context, "Invalid Date")
+            toastMessage(context, "Invalid Date")
         }
     }
 
@@ -49,17 +49,17 @@ class ReminderErrorCheck(
         if (reminder.startDate < long || reminder.startDate == 0L){
             onUpdateReminder(reminder.copy(endDate = long))
         } else {
-            ToastMessage(context, "Invalid Date")
+            toastMessage(context, "Invalid Date")
         }
     }
 
     fun saveReminder(){
         if (reminder.title.isBlank()){
-            ToastMessage(context,"Title empty")
+            toastMessage(context,"Title empty")
         } else if (reminder.dateType == ReminderDateType.SelectedDays && !reminder.selectedDays.contains(1)){
-            ToastMessage(context, "No Days Selected")
+            toastMessage(context, "No Days Selected")
         } else if (reminder.endDate == 0L && reminder.startDate == 0L && reminder.dateType != ReminderDateType.SelectedDays){
-            ToastMessage(context,"Date Empty")
+            toastMessage(context,"Date Empty")
         } else {
             onSaveReminder(reminder)
         }

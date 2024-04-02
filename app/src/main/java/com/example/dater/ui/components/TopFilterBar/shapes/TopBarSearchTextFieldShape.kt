@@ -1,39 +1,15 @@
 package com.example.dater.ui.components.TopFilterBar.shapes
 
-import android.graphics.Path.Op
-import android.graphics.RectF
-import androidx.compose.foundation.Canvas
-import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
-import androidx.compose.material3.MaterialTheme
-import androidx.compose.runtime.Composable
-import androidx.compose.ui.Modifier
-import androidx.compose.ui.geometry.CornerRadius
+
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.geometry.Rect
-import androidx.compose.ui.geometry.RoundRect
 import androidx.compose.ui.geometry.Size
-import androidx.compose.ui.graphics.ClipOp
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Outline
 import androidx.compose.ui.graphics.Path
-import androidx.compose.ui.graphics.PathOperation
 import androidx.compose.ui.graphics.Shape
-import androidx.compose.ui.graphics.asAndroidPath
-import androidx.compose.ui.graphics.asComposePath
-import androidx.compose.ui.graphics.drawscope.Stroke
-import androidx.compose.ui.graphics.drawscope.clipPath
-import androidx.compose.ui.platform.LocalDensity
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Density
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.LayoutDirection
-import androidx.compose.ui.unit.dp
-import androidx.core.graphics.minus
-import androidx.core.graphics.plus
-import com.example.dater.Data.utils.TextLength
-import com.example.dater.ui.components.SelectionBox.Shapes.roundedRectShape
 import com.example.dater.ui.components.SelectionBox.Shapes.toPxf
 
 data class TopBarSearchTextFieldInputs(
@@ -43,7 +19,7 @@ data class TopBarSearchTextFieldInputs(
     val cornerRadius: Dp
 )
 class TopBarSearchTextFieldShape (
-    val inputs: TopBarSearchTextFieldInputs
+    private val inputs: TopBarSearchTextFieldInputs
 ): Shape {
     override fun createOutline(
         size: Size,
